@@ -7,19 +7,21 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.thenewsapp.models.Article
 
-@Database(entities = [Article::class],
-    version = 1)
+@Database(
+    entities = [Article::class],
+    version = 1
+)
 
 @TypeConverters(Converters::class)
-abstract class ArticleDatabase:RoomDatabase() {
-    abstract fun getArticleDao():ArticleDAO
+abstract class ArticleDatabase : RoomDatabase() {
+    abstract fun getArticleDao(): ArticleDAO
 
-    companion object{
+    companion object {
         @Volatile
-        private var instance:ArticleDatabase? = null
+        private var instance: ArticleDatabase? = null
         private val LOCK = Any()
 
-        operator fun invoke(context: Context)= instance?: synchronized(LOCK){
+        operator fun invoke(context: Context) = instance ?: synchronized(LOCK) {
             instance ?: createDatabase(context).also {
                 instance = it
             }
