@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,6 +62,13 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
                 }
             }
         }
+
+        ItemTouchHelper(itemTouchHelperCallback).apply {
+            attachToRecyclerView(binding.recyclerFavourites)
+        }
+        newsViewModel.getFavoriteNews().observe(viewLifecycleOwner, Observer { articles->
+            newsAdapter.differ.submitList(articles)
+        })
 
     }
 

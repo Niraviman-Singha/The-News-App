@@ -39,8 +39,9 @@ class HeadlinesFragment : Fragment(R.layout.fragment_headlines) {
 
         itemHeadlinesError = view.findViewById(R.id.itemHeadlinesError)
 
-        val inflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view:View = inflater.inflate(R.layout.item_error, null)
+        val inflater =
+            requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view: View = inflater.inflate(R.layout.item_error, null)
 
         retryButton = view.findViewById(R.id.retryButton)
         errorText = view.findViewById(R.id.errorText)
@@ -55,29 +56,31 @@ class HeadlinesFragment : Fragment(R.layout.fragment_headlines) {
             findNavController().navigate(R.id.action_headlinesFragment_to_articleFragment, bundle)
         }
 
-        newsViewModel.headlines.observe(viewLifecycleOwner, Observer { response->
-            when(response){
-                is Resource.Success<*> ->{
+        newsViewModel.headlines.observe(viewLifecycleOwner, Observer { response ->
+            when (response) {
+                is Resource.Success<*> -> {
                     hideProgressbar()
                     hideErrorMessage()
                     response.data?.let { newsResponse ->
                         newsAdapter.differ.submitList(newsResponse.articles.toList())
                         val totalPages = newsResponse.totalResults / Constants.QUERY_PAGE_SIZE + 2
                         isLastPage = newsViewModel.headlinesPage == totalPages
-                        if (isLastPage){
-                            binding.recyclerHeadlines.setPadding(0,0,0,0)
+                        if (isLastPage) {
+                            binding.recyclerHeadlines.setPadding(0, 0, 0, 0)
                         }
                     }
                 }
-                is Resource.Error<*> ->{
+
+                is Resource.Error<*> -> {
                     hideProgressbar()
-                    response.message?.let { message->
+                    response.message?.let { message ->
                         Toast.makeText(activity, "Sorry error: $message", Toast.LENGTH_LONG).show()
                         showErrorMessage(message)
                     }
 
                 }
-                is Resource.Loading<*> ->{
+
+                is Resource.Loading<*> -> {
                     showProgressbar()
 
                 }
@@ -87,7 +90,6 @@ class HeadlinesFragment : Fragment(R.layout.fragment_headlines) {
         retryButton.setOnClickListener {
             newsViewModel.getHeadlines("us")
         }
-
 
 
     }
@@ -153,14 +155,14 @@ class HeadlinesFragment : Fragment(R.layout.fragment_headlines) {
 
     }
 
-        private fun setupHeadlinesRecycler() {
-            newsAdapter = NewsAdapter()
-            binding.recyclerHeadlines.apply {
-                adapter = newsAdapter
-                layoutManager = LinearLayoutManager(activity)
-                addOnScrollListener(this@HeadlinesFragment.scrollListener)
-            }
-
+    private fun setupHeadlinesRecycler() {
+        newsAdapter = NewsAdapter()
+        binding.recyclerHeadlines.apply {
+            adapter = newsAdapter
+            layoutManager = LinearLayoutManager(activity)
+            addOnScrollListener(this@HeadlinesFragment.scrollListener)
         }
+
+    }
 
 }
